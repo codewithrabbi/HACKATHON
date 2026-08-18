@@ -82,8 +82,8 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-brass border border-brass/30 rounded-full px-3 py-1 mb-7">
               <span className="w-1.5 h-1.5 rounded-full bg-signal"></span> AI BUSINESS ANALYST
             </div>
-            <h1 className="font-display text-5xl md:text-6xl leading-[1.08] tracking-tight mb-6">
-              Ask your business anything.<br /> Get an <span className="italic text-brasslight">answer you can audit.</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.08] tracking-tight mb-6">
+              Ask your business anything.<br className="hidden sm:block" /> Get an <span className="italic text-brasslight">answer you can audit.</span>
             </h1>
             <p className="text-muted text-lg leading-relaxed mb-9 max-w-lg">
               OpsPilot reads your revenue, sales, and inventory like an analyst who never sleeps — then shows exactly which numbers it used to get there.
@@ -102,7 +102,7 @@ export default function LandingPage() {
           </div>
 
           {/* NEW HERO GRAPHIC: BENTO OVERLAPPING CARDS */}
-          <div className="fade-up float relative h-[350px] sm:h-[450px] w-full flex items-center justify-center mt-10 lg:mt-0">
+          <div className="fade-up float relative h-[350px] sm:h-[450px] w-full flex items-center justify-center mt-10 lg:mt-0 scale-[0.85] sm:scale-100 origin-center">
             
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-brass/20 blur-[80px] rounded-full"></div>
@@ -200,7 +200,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="fade-up max-w-2xl mb-16">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">CAPABILITIES</p>
-            <h2 className="font-display text-4xl md:text-5xl leading-tight">One analyst, eight ways of paying attention.</h2>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl leading-tight">One analyst, eight ways of paying attention.</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {/* Feature cards */}
@@ -276,7 +276,7 @@ export default function LandingPage() {
           </div>
           <div className="fade-up order-1 lg:order-2">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">EXPLAINABLE AI</p>
-            <h2 className="font-display text-4xl leading-tight mb-6">No black box. Every number has a receipt.</h2>
+            <h2 className="font-display text-3xl md:text-4xl leading-tight mb-6">No black box. Every number has a receipt.</h2>
             <p className="text-muted text-lg leading-relaxed mb-6">Most analytics tools give you a conclusion and ask you to trust it. OpsPilot shows the data it queried, the tools it ran, and the reasoning in between — so you can check its work in the time it takes to read a sentence.</p>
             <a href="#" className="text-brasslight font-medium brass-underline pb-1">See a full audit trail →</a>
           </div>
@@ -288,7 +288,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="fade-up max-w-xl mb-16">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">SETUP</p>
-            <h2 className="font-display text-4xl">Live in an afternoon, not a quarter.</h2>
+            <h2 className="font-display text-3xl md:text-4xl">Live in an afternoon, not a quarter.</h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
             <div className="fade-up relative pl-0">
@@ -320,7 +320,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="fade-up">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">ANOMALY DETECTION + FORECASTING</p>
-            <h2 className="font-display text-4xl leading-tight mb-6">It notices the dip before your Monday report does.</h2>
+            <h2 className="font-display text-3xl md:text-4xl leading-tight mb-6">It notices the dip before your Monday report does.</h2>
             <p className="text-muted text-lg leading-relaxed">OpsPilot watches every stream continuously, flags what breaks pattern, and projects demand forward so stock-outs show up as a warning, not a surprise.</p>
           </div>
           <div className="fade-up bg-surface border border-line rounded-2xl p-6">
@@ -341,7 +341,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="fade-up max-w-xl mb-16">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">RESULTS</p>
-            <h2 className="font-display text-4xl">Told plainly, by the people who used it.</h2>
+            <h2 className="font-display text-3xl md:text-4xl">Told plainly, by the people who used it.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="fade-up bg-surface border border-line rounded-xl p-7">
@@ -365,7 +365,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="fade-up text-center max-w-xl mx-auto mb-16">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">PRICING</p>
-            <h2 className="font-display text-4xl">Start small. Scale with your data.</h2>
+            <h2 className="font-display text-3xl md:text-4xl">Start small. Scale with your data.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="fade-up bg-surface border border-line rounded-2xl p-8">
@@ -402,7 +402,7 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto">
           <div className="fade-up mb-12">
             <p className="font-mono text-xs tracking-widest text-brass mb-4">FAQ</p>
-            <h2 className="font-display text-4xl">Questions, answered plainly.</h2>
+            <h2 className="font-display text-3xl md:text-4xl">Questions, answered plainly.</h2>
           </div>
           <div className="space-y-3">
             <details className="fade-up group bg-surface border border-line rounded-xl p-5" open>
@@ -424,7 +424,7 @@ export default function LandingPage() {
       {/* FINAL CTA */}
       <section className="px-6 lg:px-10 py-28 text-center glow">
         <div className="fade-up max-w-2xl mx-auto">
-          <h2 className="font-display text-5xl leading-tight mb-6">Stop guessing why the numbers moved.</h2>
+          <h2 className="font-display text-4xl md:text-5xl leading-tight mb-6">Stop guessing why the numbers moved.</h2>
           <p className="text-muted text-lg mb-10">Connect your first data source and ask OpsPilot your first question in under ten minutes.</p>
           <Link href="/register" className="inline-block bg-brass text-ink font-medium px-8 py-4 rounded-full hover:bg-brasslight transition">Start free — no card needed</Link>
         </div>
