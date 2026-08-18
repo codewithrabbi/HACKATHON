@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <div className="flex min-h-screen bg-ink text-paper font-body grain relative overflow-x-hidden selection:bg-brass selection:text-ink">
       <Sidebar />
-      <main className="flex-1 min-h-screen overflow-y-auto relative z-10 glow">
+      <main className="flex-1 min-h-screen overflow-y-auto relative z-10 glow pt-16 md:pt-0">
         <div className="max-w-[1400px] mx-auto p-6 lg:p-8">{children}</div>
       </main>
     </div>

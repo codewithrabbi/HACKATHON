@@ -447,12 +447,12 @@ export default function DashboardPage() {
               <div className="w-8 h-8 rounded-full border-2 border-brass border-t-transparent animate-spin"></div>
             </div>
           )}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-xl font-display text-paper">Revenue Trend</h2>
               <span className="text-xs font-mono uppercase tracking-wider text-muted">Last {days} days</span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex gap-1 bg-surface2 p-1 rounded-lg">
                 <button
                   onClick={() => setChartType("bar")}
