@@ -41,7 +41,8 @@ export default function DataUploadPage() {
     formData.append("dataType", dataType);
 
     try {
-      const response = await fetch("http://localhost:8000/api/data/upload", {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch(`${API_BASE}/api/data/upload`, {
         method: "POST",
         body: formData,
       });

@@ -81,7 +81,8 @@ export default function SettingsPage() {
   const executeDelete = async () => {
     try {
       setIsDeleting(true);
-      await axios.delete("http://localhost:8000/api/data/reset_all");
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      await axios.delete(`${API_BASE}/api/data/reset_all`);
       setShowDeleteModal(false);
       window.location.href = "/dashboard";
     } catch (error) {
