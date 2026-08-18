@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0D1210;
+  --color-surface: #141B18;
+  --color-surface2: #1B2420;
+  --color-line: #2A342F;
+  --color-brass: #D4A24C;
+  --color-brasslight: #E8C27E;
+  --color-signal: #7FE0B4;
+  --color-alert: #E4572E;
+  --color-paper: #F2EFE9;
+  --color-muted: #8B9490;
+  --font-display: "Fraunces", serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+* { scroll-behavior: smooth; }
+
+/* Custom OpsPilot Styles */
+.noise {
+  background-image: radial-gradient(circle at 1px 1px, rgba(242,239,233,0.045) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+.grain::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+.caret { animation: blink 1s step-start infinite; }
+
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.float { animation: float 6s ease-in-out infinite; }
+
+@keyframes pulseDot { 0%{box-shadow:0 0 0 0 rgba(228,87,46,.55)} 70%{box-shadow:0 0 0 14px rgba(228,87,46,0)} 100%{box-shadow:0 0 0 0 rgba(228,87,46,0)} }
+.pulse-dot { animation: pulseDot 2s ease-out infinite; }
+
+.brass-underline { background-image: linear-gradient(var(--color-brass),var(--color-brass)); background-size: 0% 2px; background-repeat: no-repeat; background-position: left bottom; transition: background-size .4s ease; }
+.brass-underline:hover { background-size: 100% 2px; }
+
+.ticker-track { animation: ticker 28s linear infinite; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.glow { background: radial-gradient(600px circle at 30% 20%, rgba(212,162,76,0.14), transparent 60%), radial-gradient(500px circle at 80% 60%, rgba(127,224,180,0.08), transparent 55%); }
+
+details summary::-webkit-details-marker { display: none; }
+::selection { background: var(--color-brass); color: var(--color-ink); }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 6px; }
+
+/* csslint ignore:start */
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0D1210;
+  --color-surface: #141B18;
+  --color-surface2: #1B2420;
+  --color-line: #2A342F;
+  --color-brass: #D4A24C;
+  --color-brasslight: #E8C27E;
+  --color-signal: #7FE0B4;
+  --color-alert: #E4572E;
+  --color-paper: #F2EFE9;
+  --color-muted: #8B9490;
+  --font-display: "Fraunces", serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+* { scroll-behavior: smooth; }
+
+/* Custom OpsPilot Styles */
+.noise {
+  background-image: radial-gradient(circle at 1px 1px, rgba(242,239,233,0.045) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+.grain::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+.caret { animation: blink 1s step-start infinite; }
+
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.float { animation: float 6s ease-in-out infinite; }
+
+@keyframes pulseDot { 0%{box-shadow:0 0 0 0 rgba(228,87,46,.55)} 70%{box-shadow:0 0 0 14px rgba(228,87,46,0)} 100%{box-shadow:0 0 0 0 rgba(228,87,46,0)} }
+.pulse-dot { animation: pulseDot 2s ease-out infinite; }
+
+.brass-underline { background-image: linear-gradient(var(--color-brass),var(--color-brass)); background-size: 0% 2px; background-repeat: no-repeat; background-position: left bottom; transition: background-size .4s ease; }
+.brass-underline:hover { background-size: 100% 2px; }
+
+.ticker-track { animation: ticker 28s linear infinite; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.glow { background: radial-gradient(600px circle at 30% 20%, rgba(212,162,76,0.14), transparent 60%), radial-gradient(500px circle at 80% 60%, rgba(127,224,180,0.08), transparent 55%); }
+
+details summary::-webkit-details-marker { display: none; }
+::selection { background: var(--color-brass); color: var(--color-ink); }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 6px; }
+
+/* csslint ignore:start */
+
+body:has(.full-bleed-page) main > div {
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+body:has(.full-bleed-page) main {
+  overflow-y: hidden !important;
+}
+
+/* Markdown Content Styles */
+.markdown-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.markdown-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+.markdown-content strong {
+  color: var(--color-brass);
+  font-weight: 600;
+}
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  background-color: var(--color-surface2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.markdown-content th, .markdown-content td {
+  border: 1px solid var(--color-line);
+  padding: 0.75rem;
+  text-align: left;
+}
+.markdown-content th {
+  background-color: rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  color: var(--color-brasslight);
+}
+.markdown-content tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
