@@ -150,8 +150,26 @@ export default function AnalyticsPage() {
 
       let currentY = 105;
 
-      const chartElement = document.getElementById("analytics-charts");
-      if (chartElement) {
+      const charts = [
+        { id: "analytics-rev-chart", title: "Revenue Over Time" },
+        { id: "analytics-prod-chart", title: "Top Products" },
+        { id: "analytics-reg-chart", title: "Regional Distribution" },
+        { id: "analytics-table-chart", title: "Product Intelligence" }
+      ];
+
+      for (const chart of charts) {
+        const chartElement = document.getElementById(chart.id);
+        if (!chartElement) continue;
+
+        // Draw Section Header
+        doc.setFillColor(212, 162, 76);
+        doc.circle(margin + 4, currentY - 4, 3, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(20, 27, 24);
+        doc.text(chart.title, margin + 14, currentY);
+        currentY += 15;
+
         const canvas = await html2canvas(chartElement, {
           scale: 2,
           backgroundColor: "#131816",
@@ -159,7 +177,15 @@ export default function AnalyticsPage() {
         const imgData = canvas.toDataURL("image/png");
         
         const imgHeight = (canvas.height * contentWidth) / canvas.width;
+        
+        // Add page if image overflows
+        if (currentY + imgHeight > 800) {
+          doc.addPage();
+          currentY = margin;
+        }
+
         doc.addImage(imgData, "PNG", margin, currentY, contentWidth, imgHeight);
+        currentY += imgHeight + 30;
       }
 
       doc.save("opspilot-analytics-report.pdf");
@@ -209,7 +235,7 @@ export default function AnalyticsPage() {
             <DaySwitcher days={revenueDays} setDays={setRevenueDays} />
           </div>
           
-          <div className="h-[300px]">
+          <div id="analytics-rev-chart" className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenue} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -249,7 +275,7 @@ export default function AnalyticsPage() {
             <DaySwitcher days={productsDays} setDays={setProductsDays} />
           </div>
           
-          <div className="h-[300px]">
+          <div id="analytics-prod-chart" className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={products.slice(0, 5)} layout="vertical" margin={{ left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" horizontal={false} />
@@ -284,7 +310,7 @@ export default function AnalyticsPage() {
             <DaySwitcher days={regionsDays} setDays={setRegionsDays} />
           </div>
           
-          <div className="h-[300px]">
+          <div id="analytics-reg-chart" className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={regions} dataKey="revenue" nameKey="region" cx="50%" cy="50%" innerRadius={70} outerRadius={110} strokeWidth={0} paddingAngle={2}>
@@ -316,7 +342,7 @@ export default function AnalyticsPage() {
             <DaySwitcher days={tableDays} setDays={setTableDays} />
           </div>
           
-          <div className="overflow-x-auto">
+          <div id="analytics-table-chart" className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-line">
