@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { fetchAPI, formatCurrency, formatCurrencyCompact, formatNumber, formatDate } from "@/lib/api";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -30,6 +32,7 @@ export default function AnalyticsPage() {
   
   const [loadingText, setLoadingText] = useState("Initializing analytics...");
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   
   const [revenueDays, setRevenueDays] = useState(30);
   const [productsDays, setProductsDays] = useState(30);
@@ -112,6 +115,61 @@ export default function AnalyticsPage() {
     );
   }
 
+  const handleGenerateReport = async () => {
+    setIsGenerating(true);
+    try {
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
+      });
+
+      const pageWidth = 595.28;
+      const margin = 40;
+      const contentWidth = pageWidth - margin * 2;
+
+      // Header Banner
+      doc.setFillColor(13, 18, 16);
+      doc.rect(0, 0, pageWidth, 75, "F");
+
+      // Accent gold strip
+      doc.setFillColor(212, 162, 76);
+      doc.rect(0, 72, pageWidth, 3, "F");
+
+      // Brand Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.setTextColor(242, 239, 233);
+      doc.text("OpsPilot AI", margin, 38);
+
+      // Subtitle
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(212, 162, 76);
+      doc.text("ANALYTICS REPORT", margin, 54);
+
+      let currentY = 105;
+
+      const chartElement = document.getElementById("analytics-charts");
+      if (chartElement) {
+        const canvas = await html2canvas(chartElement, {
+          scale: 2,
+          backgroundColor: "#131816",
+        });
+        const imgData = canvas.toDataURL("image/png");
+        
+        const imgHeight = (canvas.height * contentWidth) / canvas.width;
+        doc.addImage(imgData, "PNG", margin, currentY, contentWidth, imgHeight);
+      }
+
+      doc.save("opspilot-analytics-report.pdf");
+    } catch (error) {
+      console.error("Failed to generate report:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="space-y-8 pb-10">
       {/* Header */}
@@ -125,13 +183,17 @@ export default function AnalyticsPage() {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <button className="bg-brass text-black px-4 py-2 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all flex items-center gap-2 h-[36px]">
-            Export Report
+          <button 
+            onClick={handleGenerateReport} 
+            disabled={isGenerating}
+            className={`bg-brass text-black px-4 py-2 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all flex items-center gap-2 h-[36px] ${isGenerating ? 'opacity-75 cursor-not-allowed' : ''}`}
+          >
+            {isGenerating ? "Exporting..." : "Export Report"}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="analytics-charts" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue over time */}
         <div className="lg:col-span-2 bg-surface/80 backdrop-blur-xl border border-line rounded-3xl p-6 shadow-2xl animate-fade-in">
           <div className="flex items-center justify-between mb-6">
