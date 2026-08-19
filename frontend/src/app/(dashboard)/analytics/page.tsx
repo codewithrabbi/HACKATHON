@@ -146,20 +146,90 @@ export default function AnalyticsPage() {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
       doc.setTextColor(212, 162, 76);
-      doc.text("ANALYTICS REPORT", margin, 54);
+      doc.text("ANALYTICS & INTELLIGENCE REPORT", margin, 54);
 
-      let currentY = 105;
+      let currentY = 110;
 
+      // --- 1. Calculate Summary Metrics ---
+      const totalRevenue = revenue.reduce((sum, item) => sum + item.revenue, 0);
+      const totalUnits = revenue.reduce((sum, item) => sum + item.units, 0);
+      const topProd = products.length > 0 ? products[0] : null;
+      const topRegion = regions.length > 0 ? regions[0] : null;
+
+      // --- 2. Executive Summary Box ---
+      doc.setFillColor(248, 250, 249);
+      doc.setDrawColor(225, 230, 228);
+      doc.roundedRect(margin, currentY, contentWidth, 65, 6, 6, "FD");
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(13, 18, 16);
+      doc.text("Executive Summary", margin + 15, currentY + 22);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(75, 85, 80);
+      let summaryText = `Over the selected period, total recorded revenue reached ${formatCurrency(totalRevenue)} with ${formatNumber(totalUnits)} units sold. `;
+      if (topProd) summaryText += `The top performing product was ${topProd.name} (${formatCurrency(topProd.revenue)}). `;
+      if (topRegion) summaryText += `${topRegion.region} emerged as the top region.`;
+      
+      const splitSummary = doc.splitTextToSize(summaryText, contentWidth - 30);
+      doc.text(splitSummary, margin + 15, currentY + 40);
+
+      currentY += 85;
+
+      // --- 3. KPI Cards ---
+      const cardWidth = (contentWidth - 20) / 3;
+      const cardHeight = 55;
+
+      const drawKPI = (x: number, y: number, title: string, value: string) => {
+        doc.setFillColor(252, 253, 252);
+        doc.setDrawColor(225, 230, 228);
+        doc.roundedRect(x, y, cardWidth, cardHeight, 4, 4, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7.5);
+        doc.setTextColor(100, 110, 105);
+        doc.text(title.toUpperCase(), x + 12, y + 20);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(13, 18, 16);
+        let valStr = value;
+        if (valStr.length > 15) valStr = valStr.substring(0, 15) + "..";
+        doc.text(valStr, x + 12, y + 42);
+      };
+
+      drawKPI(margin, currentY, "TOTAL REVENUE", formatCurrency(totalRevenue));
+      drawKPI(margin + cardWidth + 10, currentY, "UNITS SOLD", formatNumber(totalUnits));
+      drawKPI(margin + (cardWidth + 10) * 2, currentY, "TOP PRODUCT", topProd ? topProd.name : "N/A");
+
+      currentY += cardHeight + 35;
+
+      // --- 4. Render Charts with Insights ---
       const charts = [
         { id: "analytics-rev-chart", title: "Revenue Over Time" },
-        { id: "analytics-prod-chart", title: "Top Products" },
+        { id: "analytics-prod-chart", title: "Top Products by Revenue" },
         { id: "analytics-reg-chart", title: "Regional Distribution" },
-        { id: "analytics-table-chart", title: "Product Intelligence" }
+        { id: "analytics-table-chart", title: "Product Intelligence Table" }
       ];
 
       for (const chart of charts) {
         const chartElement = document.getElementById(chart.id);
         if (!chartElement) continue;
+
+        // Render to canvas
+        const canvasWidth = chartElement.offsetWidth;
+        const canvasHeight = chartElement.offsetHeight;
+        const imgData = await toPng(chartElement, {
+          backgroundColor: "#131816",
+          pixelRatio: 2,
+        });
+        const imgHeight = (canvasHeight * contentWidth) / canvasWidth;
+
+        // Check if page break is needed for header + text + image
+        if (currentY + imgHeight + 40 > 800) {
+          doc.addPage();
+          currentY = margin;
+        }
 
         // Draw Section Header
         doc.setFillColor(212, 162, 76);
@@ -168,26 +238,29 @@ export default function AnalyticsPage() {
         doc.setFontSize(12);
         doc.setTextColor(20, 27, 24);
         doc.text(chart.title, margin + 14, currentY);
-        currentY += 15;
-
-        const canvasWidth = chartElement.offsetWidth;
-        const canvasHeight = chartElement.offsetHeight;
-
-        const imgData = await toPng(chartElement, {
-          backgroundColor: "#131816",
-          pixelRatio: 2,
-        });
         
-        const imgHeight = (canvasHeight * contentWidth) / canvasWidth;
-        
-        // Add page if image overflows
-        if (currentY + imgHeight > 800) {
-          doc.addPage();
-          currentY = margin;
+        // Add insight text
+        let insightText = "";
+        if (chart.id === "analytics-rev-chart") {
+            insightText = `Visualizes the daily revenue trend. Average daily revenue is approximately ${formatCurrency(totalRevenue / (revenue.length || 1))}.`;
+        } else if (chart.id === "analytics-prod-chart" && topProd) {
+            insightText = `${topProd.name} contributes significantly, with a profit margin of ${topProd.margin_pct}%.`;
+        } else if (chart.id === "analytics-reg-chart" && topRegion) {
+            insightText = `${topRegion.region} accounts for ${topRegion.percentage}% of the total volume.`;
+        } else if (chart.id === "analytics-table-chart") {
+            insightText = `Comprehensive breakdown of product-level metrics and profitability.`;
         }
 
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(9);
+        doc.setTextColor(120, 128, 124);
+        doc.text(insightText, margin + 14, currentY + 16);
+
+        currentY += 28;
+
+        // Draw Image
         doc.addImage(imgData, "PNG", margin, currentY, contentWidth, imgHeight);
-        currentY += imgHeight + 30;
+        currentY += imgHeight + 35;
       }
 
       doc.save("opspilot-analytics-report.pdf");
