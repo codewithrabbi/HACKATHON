@@ -492,13 +492,13 @@ async def generate_actions() -> list[dict]:
     Analyze the following business metrics and generate 3 to 5 actionable recommendations for the operations team.
     
     Sales Data (Last 30 Days):
-    {json.dumps(sales, indent=2)}
+    {json.dumps(_clean_types(sales), indent=2)}
     
     Detected Anomalies:
-    {json.dumps(anomalies, indent=2)}
+    {json.dumps(_clean_types(anomalies), indent=2)}
     
     Inventory Risks:
-    {json.dumps(risks, indent=2)}
+    {json.dumps(_clean_types(risks), indent=2)}
     
     Output exactly a JSON array of objects.
     Format each action as a JSON object with: 
@@ -612,20 +612,37 @@ async def generate_revenue_leakage() -> list[dict]:
         return []
 
 def _cache_leakages(leakages: list[dict]):
-    """Store generated leakages in the database."""
+    """Store generated leakages in the database and create dynamic actions."""
     execute("DELETE FROM revenue_leakage_cache")
+    # Clear old dynamic leakage actions so they don't pile up on re-scans
+    execute("DELETE FROM actions WHERE category = 'Revenue Leakage'")
     
     rows = []
+    action_rows = []
     for l in leakages:
-        rows.append((
-            l.get("problem", "Unknown Issue"),
-            l.get("evidence", "No evidence provided"),
-            l.get("financial_impact", "$0"),
-            l.get("recommended_action", "Investigate further")
+        problem = l.get("problem", "Unknown Issue")
+        evidence = l.get("evidence", "No evidence provided")
+        impact = l.get("financial_impact", "$0")
+        action = l.get("recommended_action", "Investigate further")
+        
+        rows.append((problem, evidence, impact, action))
+        
+        # Add to actions table as dynamic task
+        description = f"{action}\n\nEvidence: {evidence}\nImpact: {impact}"
+        action_rows.append((
+            problem,
+            description,
+            "high",
+            "Revenue Leakage"
         ))
         
     if rows:
         execute_many(
             "INSERT INTO revenue_leakage_cache (problem, evidence, financial_impact, recommended_action) VALUES (%s, %s, %s, %s)",
             rows
+        )
+    if action_rows:
+        execute_many(
+            "INSERT INTO actions (title, description, priority, category) VALUES (%s, %s, %s, %s)",
+            action_rows
         )
