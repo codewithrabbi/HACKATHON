@@ -5,6 +5,9 @@ import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
+from psycopg2.pool import SimpleConnectionPool
+import atexit
+
 load_dotenv()
 
 # Initialize Supabase client
@@ -15,11 +18,21 @@ supabase: Client = create_client(supabase_url, supabase_key) if supabase_url els
 # Supabase Postgres URL
 DB_URL = os.environ.get("SUPABASE_DB_URL", "")
 
+# Initialize Connection Pool
+pool = None
+if DB_URL:
+    pool = SimpleConnectionPool(1, 20, DB_URL, cursor_factory=RealDictCursor)
+    atexit.register(pool.closeall)
+
 def get_connection():
-    """Get a Postgres connection with RealDictCursor enabled."""
-    if not DB_URL:
-        raise ValueError("SUPABASE_DB_URL is not set in the environment variables.")
-    return psycopg2.connect(DB_URL, cursor_factory=RealDictCursor)
+    """Get a Postgres connection from the pool."""
+    if not pool:
+        raise ValueError("SUPABASE_DB_URL is not set or pool failed to initialize.")
+    return pool.getconn()
+
+def release_connection(conn):
+    if pool and conn:
+        pool.putconn(conn)
 
 def query(sql: str, params: tuple = ()) -> list[dict]:
     """Execute a read query and return list of dicts."""
@@ -31,7 +44,7 @@ def query(sql: str, params: tuple = ()) -> list[dict]:
             cursor.execute(sql, params)
             return [dict(row) for row in cursor.fetchall()]
     finally:
-        conn.close()
+        release_connection(conn)
 
 def execute(sql: str, params: tuple = ()) -> int:
     """Execute a write query and return rows affected."""
@@ -43,7 +56,7 @@ def execute(sql: str, params: tuple = ()) -> int:
             conn.commit()
             return cursor.rowcount
     finally:
-        conn.close()
+        release_connection(conn)
 
 def execute_many(sql: str, data: list[tuple]) -> int:
     """Execute a batch insert."""
@@ -55,13 +68,13 @@ def execute_many(sql: str, data: list[tuple]) -> int:
             conn.commit()
             return cursor.rowcount
     finally:
-        conn.close()
+        release_connection(conn)
 
 def db_exists() -> bool:
     """Check if the database connection works."""
     try:
         conn = get_connection()
-        conn.close()
+        release_connection(conn)
         return True
     except:
         return False

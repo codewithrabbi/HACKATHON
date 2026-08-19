@@ -142,9 +142,10 @@ async def upload_data(
     finally:
         conn.close()
         
-    background_tasks.add_task(generate_insights)
-    background_tasks.add_task(generate_actions)
-    background_tasks.add_task(generate_revenue_leakage)
+    import asyncio
+    asyncio.create_task(generate_insights())
+    asyncio.create_task(generate_actions())
+    asyncio.create_task(generate_revenue_leakage())
     return {"status": "success", "inserted": inserted_count, "table": target_table, "mapping": {}}
 
 @router.delete("/reset_all")
