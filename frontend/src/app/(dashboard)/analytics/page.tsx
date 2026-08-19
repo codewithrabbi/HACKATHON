@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 import { fetchAPI, formatCurrency, formatCurrencyCompact, formatNumber, formatDate } from "@/lib/api";
 import {
@@ -170,13 +170,15 @@ export default function AnalyticsPage() {
         doc.text(chart.title, margin + 14, currentY);
         currentY += 15;
 
-        const canvas = await html2canvas(chartElement, {
-          scale: 2,
+        const canvasWidth = chartElement.offsetWidth;
+        const canvasHeight = chartElement.offsetHeight;
+
+        const imgData = await toPng(chartElement, {
           backgroundColor: "#131816",
+          pixelRatio: 2,
         });
-        const imgData = canvas.toDataURL("image/png");
         
-        const imgHeight = (canvas.height * contentWidth) / canvas.width;
+        const imgHeight = (canvasHeight * contentWidth) / canvasWidth;
         
         // Add page if image overflows
         if (currentY + imgHeight > 800) {
@@ -189,8 +191,9 @@ export default function AnalyticsPage() {
       }
 
       doc.save("opspilot-analytics-report.pdf");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to generate report:", error);
+      alert("Failed to generate report: " + (error?.message || String(error)));
     } finally {
       setIsGenerating(false);
     }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import { fetchAPI, formatCurrency, formatNumber, formatPercent, formatCurrencyCompact, formatDate } from "@/lib/api";
 import {
   DollarSign,
@@ -296,15 +296,17 @@ export default function DashboardPage() {
       const chartElement = document.getElementById("dashboard-revenue-chart");
       if (chartElement) {
         try {
-          const canvas = await html2canvas(chartElement, {
-            scale: 2,
-            backgroundColor: "#131816" // Match surface2 color
+          const canvasWidth = chartElement.offsetWidth;
+          const canvasHeight = chartElement.offsetHeight;
+
+          const imgData = await toPng(chartElement, {
+            backgroundColor: "#131816",
+            pixelRatio: 2
           });
-          const imgData = canvas.toDataURL("image/png");
           
           // Calculate height to maintain aspect ratio
           const imgWidth = contentWidth;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
           
           // Constrain height if it's too tall
           const finalHeight = Math.min(imgHeight, 180);
